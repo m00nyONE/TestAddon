@@ -30,11 +30,10 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          mkdir -p tmp/TestAddon
-          cp -r ./* tmp/TestAddon
-          rm -rf tmp/TestAddon/{.git,.github,.gitignore}
-          cd tmp
-          zip -r "../TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" TestAddon -x "*.git*" "*.github*" ".gitignore"
+          mkdir -p /tmp/TestAddon
+          cp -r ./* /tmp/TestAddon
+          rm -rf /tmp/TestAddon/{.git,.github,.gitignore}
+          zip -r "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/TestAddon -x "*.git*" "*.github*" ".gitignore"
 
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
