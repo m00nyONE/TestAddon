@@ -1,0 +1,7 @@
+## Title: TestAddon
+## Version: dev
+## Author: |c76c3f4@m00nyONE|r
+## APIVersion: 101044
+## AddOnVersion: 00000000
+
+TestAddon.lua
