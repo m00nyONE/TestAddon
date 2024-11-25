@@ -35,14 +35,6 @@ jobs:
           rm -rf /tmp/TestAddon/{.git,.github,.gitignore}
           zip -r "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/TestAddon -x "*.git*" "*.github*" ".gitignore"
 
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
-          asset_name: TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
-          asset_content_type: application/zip
-
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -52,6 +44,16 @@ jobs:
           body: "Automated release created on ${{ env.BUILD_DATE_WITH_DOT }}"
           draft: false
           prerelease: false
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
+          asset_name: TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
+          asset_content_type: application/zip
 
       - name: Send to ESOUI
         env:
