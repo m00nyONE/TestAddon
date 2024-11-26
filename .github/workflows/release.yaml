@@ -20,6 +20,9 @@ jobs:
           touch /tmp/testfile
           touch /testfile
 
+      - name: exit
+        run: exit 1
+
       - name: get repo name
         run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
 
