@@ -14,6 +14,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: get repo name
+        run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
+
       - name: Get current year, month and day
         id: BUILD_DATE
         run: |
@@ -26,25 +29,25 @@ jobs:
 
       - name: Replace placeholders with current date
         run: |
-          sed -i "s/version = \"dev\"/version = ${{ env.BUILD_DATE_WITH_DOT }}/g" TestAddon.lua
-          sed -i "s/## Version: dev/## Version: ${{ env.BUILD_DATE_WITH_DOT }}/g" TestAddon.txt
-          sed -i "s/## AddOnVersion: 00000000/## AddOnVersion: ${{ env.BUILD_DATE_NUMBER }}/g" TestAddon.txt
+          sed -i "s/version = \"dev\"/version = ${{ env.BUILD_DATE_WITH_DOT }}/g" ${{ env.REPO_NAME }}.lua
+          sed -i "s/## Version: dev/## Version: ${{ env.BUILD_DATE_WITH_DOT }}/g" ${{ env.REPO_NAME }}.txt
+          sed -i "s/## AddOnVersion: 00000000/## AddOnVersion: ${{ env.BUILD_DATE_NUMBER }}/g" ${{ env.REPO_NAME }}.txt
 
       - name: Create ZIP archive
         run: |
-          mkdir -p /tmp/TestAddon
-          cp -r ./* /tmp/TestAddon
-          rm -rf /tmp/TestAddon/{.git,.github,.gitignore}
-          zip -r "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/TestAddon -x "*.git*" "*.github*" ".gitignore"
+          mkdir -p /tmp/${{ env.REPO_NAME }}
+          cp -r ./* /tmp/${{ env.REPO_NAME }}
+          rm -rf /tmp/${{ env.REPO_NAME }}/{.git,.github,.gitignore}
+          zip -r "${{ env.REPO_NAME }}-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/${{ env.REPO_NAME }} -x "*.git*" "*.github*" ".gitignore"
 
       - name: Create GitHub Release
         #id: create_release
         uses: ncipollo/release-action@v1
         with:
-          name: "TestAddon Release - ${{ env.BUILD_DATE_WITH_DOT }}"
+          name: "${{ env.REPO_NAME }} Release - ${{ env.BUILD_DATE_WITH_DOT }}"
           commit: ${{ github.ref }}
           tag: "${{ env.BUILD_DATE_WITH_DOT }}"
-          artifacts: "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip"
+          artifacts: "${{ env.REPO_NAME }}-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip"
           artifactContentType: application/zip
           bodyFile: CHANGELOG.md
           allowUpdates: true
@@ -59,6 +62,6 @@ jobs:
             -H "x-api-token: $ESOUI_API_KEY" \
             -F "id=${ADDON_ID}" \
             -F "version=${{ env.BUILD_DATE_WITH_DOT }}" \
-            -F "updatefile=@TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" \
+            -F "updatefile=@${{ env.REPO_NAME }}-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" \
             -F "changelog=$(cat CHANGELOG.md)" \
             https://api.esoui.com/addons/update
