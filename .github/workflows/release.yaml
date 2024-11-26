@@ -20,7 +20,7 @@ jobs:
           echo "BUILD_DATE_DAY=$(date -u +'%d')" >> $GITHUB_ENV
           echo "BUILD_DATE_NUMBER=$(date +'%Y%m%d')" >> $GITHUB_ENV
           echo "BUILD_DATE_WITH_DOT=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
-          echo "BUILD_DATE_WITH_HYPHEN=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+          echo "BUILD_DATE_WITH_HYPHEN=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Replace placeholders with current date
         run: |
