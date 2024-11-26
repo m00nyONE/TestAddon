@@ -7,10 +7,12 @@ on:
 
 jobs:
   release:
+    name: "release"
     runs-on: ubuntu-latest
+    permissions: write-all
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get current year, month and day
         id: BUILD_DATE
