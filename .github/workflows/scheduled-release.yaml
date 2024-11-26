@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    # every day at 05:07am
+    - cron: "15 2 * * *"
 
 jobs:
   release:
