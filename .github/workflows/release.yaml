@@ -36,30 +36,22 @@ jobs:
           zip -r "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/TestAddon -x "*.git*" "*.github*" ".gitignore"
 
       - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+        #id: create_release
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: "${{ env.BUILD_DATE_WITH_DOT }}"
-          release_name: "TestAddon Release - ${{ env.BUILD_DATE_WITH_DOT }}"
-          body: "Automated release created on ${{ env.BUILD_DATE_WITH_DOT }}"
-          draft: false
-          prerelease: false
-
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
-          asset_name: TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip
-          asset_content_type: application/zip
+          name: "TestAddon Release - ${{ env.BUILD_DATE_WITH_DOT }}"
+          commit: ${{ github.ref }}
+          tag: "${{ env.BUILD_DATE_WITH_DOT }}"
+          artifacts: "TestAddon-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip"
+          artifactContentType: application/zip
+          bodyFile: CHANGELOG.md
+          allowUpdates: true
+          makeLatest: true
 
       - name: Send to ESOUI
         env:
           ESOUI_API_KEY: ${{ secrets.ESOUI_API_KEY }}
           ADDON_ID: 3998
-          #https://api.esoui.com/addons/update
         run: |
           curl -X POST \
             -H "x-api-token: $ESOUI_API_KEY" \
