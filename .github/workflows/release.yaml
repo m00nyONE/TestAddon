@@ -14,15 +14,6 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: test
-        run: |
-          echo $(pwd)
-          touch /tmp/testfile
-          touch /testfile
-
-      - name: exit
-        run: exit 1
-
       - name: get repo name
         run: echo "REPO_NAME=${{ github.event.repository.name }}" >> $GITHUB_ENV
 
@@ -44,10 +35,12 @@ jobs:
 
       - name: Create ZIP archive
         run: |
+          REPO_FOLDER=$(pwd)
           mkdir -p /tmp/${{ env.REPO_NAME }}
           cp -r ./* /tmp/${{ env.REPO_NAME }}
           rm -rf /tmp/${{ env.REPO_NAME }}/{.git,.github,.gitignore}
-          zip -r "${{ env.REPO_NAME }}-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" /tmp/${{ env.REPO_NAME }} -x "*.git*" "*.github*" ".gitignore"
+          cd /tmp
+          zip -r "$REPO_FOLDER/${{ env.REPO_NAME }}-${{ env.BUILD_DATE_WITH_HYPHEN }}.zip" ./${{ env.REPO_NAME }} -x "*.git*" "*.github*" ".gitignore"
 
       - name: Create GitHub Release
         #id: create_release
